@@ -1,46 +1,11 @@
-/******************************************
-Treehouse Techdegree:
-FSJS project 2 - List Filter and Pagination
-******************************************/
-
-// Study guide for this project - https://drive.google.com/file/d/1OD1diUsTMdpfMDv677TfL1xO2CEkykSz/view?usp=sharing
-
-
-/***
-   Add your global variables that store the DOM elements you will
-   need to reference and/or manipulate.
-
-   But be mindful of which variables should be global and which
-   should be locally scoped to one of the two main functions you're
-   going to create. A good general rule of thumb is if the variable
-   will only be used inside of a function, then it can be locally
-   scoped to that function.
-***/
+// Global Variables
 const studentListItems = document.querySelectorAll(".student-item");
 const maxStudentsPerPage = 10;
 
 
-
-/***
-   Create the `showPage` function to hide all of the items in the
-   list except for the ten you want to show.
-
-
-
-   Pro Tips:
-     - Keep in mind that with a list of 54 students, the last page
-       will only display four.
-     - Remember that the first student has an index of 0.
-     - Remember that a function `parameter` goes in the parens when
-       you initially define the function, and it acts as a variable
-       or a placeholder to represent the actual function `argument`
-       that will be passed into the parens later when you call or
-       "invoke" the function
-***/
 function getStartIndex(page, maxPerPage) {
  return (page  * maxStudentsPerPage) - maxStudentsPerPage;
 }
-
 
 function getEndIndex(page, maxPerPage) {
 return (page * maxStudentsPerPage);
@@ -63,10 +28,11 @@ for(let i = 0; i < studentListItems.length; i++) {
 
 
 }
-showPage(studentListItems, 1);
 
 
-function pagination(list) {
+
+
+function pagination(list, page) {
   const containerDiv = document.querySelector("div.page");
   const jsContainerAttribute = document.createAttribute("js-container");
   containerDiv.setAttributeNode(jsContainerAttribute);
@@ -78,27 +44,30 @@ function pagination(list) {
 
   const ul = document.createElement("ul");
   div.appendChild(ul);
-
-for(let i =1; i<6; i++) {
+const numberOfPaginationLinks = Math.ceil(list.length / maxStudentsPerPage);
+for(let i =1; i<numberOfPaginationLinks; i++) {
 let li = document.createElement("li");
 let a = document.createElement("a");
 a.textContent = [i];
+a.setAttribute("href", "#")
 li.appendChild(a)
 ul.appendChild(li);
 
 }
-
-
+const paginationActive = document.querySelectorAll("div.pagination a")[page - 1];
+paginationActive.className = "active";
 }
 
-pagination(studentListItems);
-/***
-   Create the `appendPageLinks function` to generate, append, and add
-   functionality to the pagination buttons.
-***/
+pagination(studentListItems,1);
 
+document.querySelector("div.pagination ul").addEventListener("click", (e)=> {
+  const paginationActive = document.querySelectorAll("div.pagination a");
+  const pageNumber = parseInt(e.target.textContent);
+  showPage(studentListItems, pageNumber);
+  for(let i = 0; i<paginationActive.length; i++) {
+    paginationActive[i].className = "";
+  }
+  paginationActive[pageNumber - 1].className = "active";
+});
 
-
-
-
-// Remember to delete the comments that came with this file, and replace them with your own code comments.
+showPage(studentListItems, 1);
