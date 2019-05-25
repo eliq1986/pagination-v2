@@ -5,11 +5,16 @@ const maxStudentsPerPage = 10;
 
 //function invoked upon page load
 function onPageLoad() {
+
   pagination(studentListItems,1);
 
   showPage(studentListItems, 1);
 
   appendsObtrusiveJS();
+
+  focusOnInputElement();
+
+  obtrusiveNoResults();
 }
 
 //returns start index; takes two parameters.
@@ -18,6 +23,11 @@ const getStartIndex = (page, maxPerPage) => (page  * maxStudentsPerPage) - maxSt
 
 //returns end index; takes two parameters
 const getEndIndex = (page, maxPerPage) => page * maxStudentsPerPage;
+
+
+function focusOnInputElement() {
+  document.querySelector("div.student-search input").focus();
+}
 
 
 function appendsObtrusiveJS() {
@@ -72,63 +82,63 @@ function appendLinks(list) {
 
   const ulPagination = document.querySelector("ul.js-pagination");
   const numberOfPaginationLinks = Math.ceil(list.length / maxStudentsPerPage);
+
   for(let i =1; i<=numberOfPaginationLinks; i++) {
 
-  let li = document.createElement("li");
+    let li = document.createElement("li");
 
-  let a = document.createElement("a");
+    let a = document.createElement("a");
 
-  a.textContent = [i];
+    a.textContent = [i];
 
-  a.setAttribute("href", "#")
+    a.setAttribute("href", "#")
 
-  li.appendChild(a)
+    li.appendChild(a)
 
-  ulPagination.appendChild(li);
+    ulPagination.appendChild(li);
 
   }
 
 }
 
 function setFirstLinkActiveClass(page, list) {
-document.querySelectorAll("div.pagination a")[page - 1].className = "active";
+  if(list.length !== 0) {
+    document.querySelectorAll("div.pagination a")[page - 1].className = "active";
+  }
 
 }
 
 
 function pagination(list, page) {
 
-  const containerDiv = document.querySelector("div.page");
+    const containerDiv = document.querySelector("div.page");
 
-//******need to fix this as it adds duplicate attributes****///
-  const jsContainerAttribute = document.createAttribute("js-container");
+  //******need to fix this as it adds duplicate attributes****///
+    const jsContainerAttribute = document.createAttribute("js-container");
 
-  containerDiv.setAttributeNode(jsContainerAttribute);
+    containerDiv.setAttributeNode(jsContainerAttribute);
 
-  const jsContainer = document.querySelector("div[js-container]");
+    const jsContainer = document.querySelector("div[js-container]");
 
-  const div = document.createElement("div");
+    const div = document.createElement("div");
 
-  div.setAttribute("class", "pagination");
+    div.setAttribute("class", "pagination");
 
-  jsContainer.appendChild(div);
+    jsContainer.appendChild(div);
 
-  const ul = document.createElement("ul");
+    const ul = document.createElement("ul");
 
-  ul.setAttribute("class", "js-pagination");
+    ul.setAttribute("class", "js-pagination");
 
-  div.appendChild(ul);
+    div.appendChild(ul);
 
-  if(list.length < 10) {
-    appendLinks(list, 1);
-    setFirstLinkActiveClass(1);
-  } else {
-    appendLinks(list, page);
-
-    setFirstLinkActiveClass(page, list);
-  }
-
-
+    if(list.length < 10) {
+      appendLinks(list, 1);
+      setFirstLinkActiveClass(1, list);
+    } else {
+      appendLinks(list, page);
+      setFirstLinkActiveClass(page, list);
+    }
 
 }
 
@@ -145,6 +155,38 @@ function setActiveClass(event) {
   paginationLinks[pageNumber - 1].className = "active";
 }
 
+function obtrusiveNoResults() {
+  const classPage = document.querySelector("div.page");
+  const noResultsTemplate = `
+    <h2>No results have been found</h2>
+    <h3>Thanos must of snapped his finger</h3>
+  `;
+  const div = document.createElement("div");
+  div.setAttribute("no-results", "");
+  div.innerHTML = noResultsTemplate;
+  classPage.appendChild(div);
+  displayNoResults(false)
+}
+
+
+function displayNoResults(bool) {
+
+  if(bool) {
+    document.querySelector("div[no-results]").style.display = "block";
+  } else {
+    document.querySelector("div[no-results]").style.display = "none";
+
+  }
+}
+
+
+function displayResults(namesMatchSearchInput) {
+  const paginationDiv = document.querySelector("div.pagination");
+  const parentNode = paginationDiv.parentNode;
+  parentNode.removeChild(paginationDiv);
+  pagination(namesMatchSearchInput, 1);
+  showPage(namesMatchSearchInput, 1);
+}
 
 //******Invoked function calls set up page load******//
 onPageLoad();
@@ -156,25 +198,35 @@ document.querySelector("div.pagination ul").addEventListener("click", event => {
 
 
 document.querySelector("div.student-search button").addEventListener("click", (e)=> {
- let searchInput = document.querySelector("div.student-search input");
- const studentNames = document.querySelectorAll("div.student-details h3");
- const namesMatchSearchInput = [];
- let enteredInputValue = searchInput.value.trim();
- console.log(enteredInputValue.split(" "));
- console.log(enteredInputValue);
+   let searchInput = document.querySelector("div.student-search input");
+   const studentNames = document.querySelectorAll("div.student-details h3");
+   const namesMatchSearchInput = [];
+   let enteredInputValue = searchInput.value.trim();
+   enteredInputValue = enteredInputValue.split(" ");
+   enteredInputValue = enteredInputValue;
+   const firstName = enteredInputValue[0];
+   const lastName = enteredInputValue[enteredInputValue.length - 1];
 
- studentNames.forEach(student => {
-   const firstAndLastName = student.textContent.toLowerCase().split(" ");
 
-   if (firstAndLastName.indexOf(searchInput.value.toLowerCase()) > -1) {
-      namesMatchSearchInput.push(student.parentNode.parentNode);
-   } else {
-     student.parentNode.parentNode.style.display = "none";
-   }
-});
-   const paginationDiv = document.querySelector("div.pagination");
-   const parentNode = paginationDiv.parentNode;
-   parentNode.removeChild(paginationDiv);
-   pagination(namesMatchSearchInput, 1);
-   showPage(namesMatchSearchInput, 1);
+      studentNames.forEach(student => {
+        const firstAndLastName = student.textContent.toLowerCase().split(" ");
+        if (firstAndLastName.indexOf(firstName.toLowerCase()) > -1 || firstAndLastName.indexOf(lastName.toLowerCase()) > -1) {
+           namesMatchSearchInput.push(student.parentNode.parentNode);
+        } else {
+          student.parentNode.parentNode.style.display = "none";
+        }
+     });
+
+        if (namesMatchSearchInput.length < 1 || enteredInputValue.length < 1) {
+          displayNoResults(true);
+        } else {
+          displayNoResults(false);
+          displayResults(namesMatchSearchInput);
+        }
+
+
+
+
+
+
 });
