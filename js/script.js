@@ -112,6 +112,7 @@ function setFirstLinkActiveClass(page, list) {
 function pagination(list, page) {
 
     const containerDiv = document.querySelector("div.page");
+    console.log(containerDiv);
 
   //******need to fix this as it adds duplicate attributes****///
     const jsContainerAttribute = document.createAttribute("js-container");
@@ -177,15 +178,25 @@ function displayNoResults(bool) {
     document.querySelector("div[no-results]").style.display = "none";
 
   }
+
 }
 
 
 function displayResults(namesMatchSearchInput) {
   const paginationDiv = document.querySelector("div.pagination");
-  const parentNode = paginationDiv.parentNode;
-  parentNode.removeChild(paginationDiv);
-  pagination(namesMatchSearchInput, 1);
-  showPage(namesMatchSearchInput, 1);
+  if(paginationDiv === null) {
+    showPage(namesMatchSearchInput, 1);
+    pagination(namesMatchSearchInput, 1);
+  } else {
+    paginationDiv.style.display = "block";
+    const parentNode = paginationDiv.parentNode;
+    parentNode.removeChild(paginationDiv);
+    showPage(namesMatchSearchInput, 1);
+    pagination(namesMatchSearchInput, 1);
+
+
+  }
+
 }
 
 //******Invoked function calls set up page load******//
@@ -203,7 +214,6 @@ document.querySelector("div.student-search button").addEventListener("click", (e
    const namesMatchSearchInput = [];
    let enteredInputValue = searchInput.value.trim();
    enteredInputValue = enteredInputValue.split(" ");
-   enteredInputValue = enteredInputValue;
    const firstName = enteredInputValue[0];
    const lastName = enteredInputValue[enteredInputValue.length - 1];
 
@@ -219,6 +229,12 @@ document.querySelector("div.student-search button").addEventListener("click", (e
 
         if (namesMatchSearchInput.length < 1 || enteredInputValue.length < 1) {
           displayNoResults(true);
+          const paginationDiv = document.querySelector("div.pagination");
+          if(paginationDiv !== null ){
+              const parentNode = paginationDiv.parentNode;
+              parentNode.removeChild(paginationDiv);
+          }
+
         } else {
           displayNoResults(false);
           displayResults(namesMatchSearchInput);
