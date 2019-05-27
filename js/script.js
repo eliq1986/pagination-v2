@@ -81,6 +81,7 @@ function showPage(list, page){
 function appendLinks(list) {
 
   const ulPagination = document.querySelector("ul.js-pagination");
+
   const numberOfPaginationLinks = Math.ceil(list.length / maxStudentsPerPage);
 
   for(let i =1; i<=numberOfPaginationLinks; i++) {
@@ -102,6 +103,7 @@ function appendLinks(list) {
 }
 
 function setFirstLinkActiveClass(page, list) {
+
   if(list.length !== 0) {
     document.querySelectorAll("div.pagination a")[page - 1].className = "active";
   }
@@ -111,35 +113,40 @@ function setFirstLinkActiveClass(page, list) {
 
 function pagination(list, page) {
 
-    const containerDiv = document.querySelector("div.page");
-    console.log(containerDiv);
+  const containerDiv = document.querySelector("div.page");
+  console.log(containerDiv);
 
-  //******need to fix this as it adds duplicate attributes****///
-    const jsContainerAttribute = document.createAttribute("js-container");
+//******need to fix this as it adds duplicate attributes****///
+  const jsContainerAttribute = document.createAttribute("js-container");
 
-    containerDiv.setAttributeNode(jsContainerAttribute);
+  containerDiv.setAttributeNode(jsContainerAttribute);
 
-    const jsContainer = document.querySelector("div[js-container]");
+  const jsContainer = document.querySelector("div[js-container]");
 
-    const div = document.createElement("div");
+  const div = document.createElement("div");
 
-    div.setAttribute("class", "pagination");
+  div.setAttribute("class", "pagination");
 
-    jsContainer.appendChild(div);
+  jsContainer.appendChild(div);
 
-    const ul = document.createElement("ul");
+  const ul = document.createElement("ul");
 
-    ul.setAttribute("class", "js-pagination");
+  ul.setAttribute("class", "js-pagination");
 
-    div.appendChild(ul);
+  div.appendChild(ul);
 
-    if(list.length < 10) {
-      appendLinks(list, 1);
-      setFirstLinkActiveClass(1, list);
-    } else {
-      appendLinks(list, page);
-      setFirstLinkActiveClass(page, list);
-    }
+  if(list.length < 10) {
+
+    appendLinks(list, 1);
+
+    setFirstLinkActiveClass(1, list);
+
+  } else {
+
+    appendLinks(list, page);
+
+    setFirstLinkActiveClass(page, list);
+  }
 
 }
 
@@ -153,14 +160,17 @@ function setActiveClass(event) {
   showPage(studentListItems, pageNumber);
 
   paginationLinks.forEach(link => link.className = "");
+
   paginationLinks[pageNumber - 1].className = "active";
 }
 
 function obtrusiveNoResults() {
   const classPage = document.querySelector("div.page");
+  const thanosImage = "images/thanos.png";
   const noResultsTemplate = `
     <h2>No results have been found</h2>
     <h3>Thanos must of snapped his finger</h3>
+    <img src=${thanosImage}>
   `;
   const div = document.createElement("div");
   div.setAttribute("no-results", "");
