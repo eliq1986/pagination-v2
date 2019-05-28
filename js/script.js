@@ -114,7 +114,6 @@ function setFirstLinkActiveClass(page, list) {
 function pagination(list, page) {
 
   const containerDiv = document.querySelector("div.page");
-  console.log(containerDiv);
 
 //******need to fix this as it adds duplicate attributes****///
   const jsContainerAttribute = document.createAttribute("js-container");
@@ -164,19 +163,37 @@ function setActiveClass(event) {
   paginationLinks[pageNumber - 1].className = "active";
 }
 
+
+function removePaginationDiv(paginationDiv) {
+
+  const parentNode = paginationDiv.parentNode;
+
+  parentNode.removeChild(paginationDiv);
+}
+
+
 function obtrusiveNoResults() {
+
   const classPage = document.querySelector("div.page");
+
   const thanosImage = "images/thanos.png";
+
   const noResultsTemplate = `
     <h2>No results have been found</h2>
     <h3>Thanos must of snapped his finger</h3>
     <img src=${thanosImage}>
   `;
+
   const div = document.createElement("div");
+
   div.setAttribute("no-results", "");
+
   div.innerHTML = noResultsTemplate;
+
   classPage.appendChild(div);
-  displayNoResults(false)
+
+  displayNoResults(false);
+
 }
 
 
@@ -198,17 +215,40 @@ function displayResults(namesMatchSearchInput) {
     showPage(namesMatchSearchInput, 1);
     pagination(namesMatchSearchInput, 1);
   } else {
-    paginationDiv.style.display = "block";
-    const parentNode = paginationDiv.parentNode;
-    parentNode.removeChild(paginationDiv);
+    removePaginationDiv(paginationDiv);
     showPage(namesMatchSearchInput, 1);
     pagination(namesMatchSearchInput, 1);
-
 
   }
 
 }
 
+const searchObj = (inputValue) => {
+
+  let enteredSearchInputValue = inputValue.value.trim();
+
+  enteredSearchInputValue = enteredSearchInputValue.split(" ");
+
+  return {
+    lengthOfInput: enteredSearchInputValue.length,
+    firstName: enteredSearchInputValue[0],
+    lastName: enteredSearchInputValue[enteredSearchInputValue.length - 1]
+  }
+}
+
+const namesFoundArr = (inputSearchObj, studentNames) => {
+  const namesMatchSearchInput = [];
+  studentNames.forEach(student => {
+    const firstAndLastName = student.textContent.toLowerCase().split(" ");
+    if (firstAndLastName.indexOf(inputSearchObj.firstName.toLowerCase()) > -1 || firstAndLastName.indexOf(inputSearchObj.lastName.toLowerCase()) > -1) {
+       namesMatchSearchInput.push(student.parentNode.parentNode);
+    } else {
+      student.parentNode.parentNode.style.display = "none";
+    }
+ });
+return namesMatchSearchInput;
+
+}
 //******Invoked function calls set up page load******//
 onPageLoad();
 
@@ -220,39 +260,23 @@ document.querySelector("div.pagination ul").addEventListener("click", event => {
 
 document.querySelector("div.student-search button").addEventListener("click", (e)=> {
    let searchInput = document.querySelector("div.student-search input");
-   const studentNames = document.querySelectorAll("div.student-details h3");
-   const namesMatchSearchInput = [];
-   let enteredInputValue = searchInput.value.trim();
-   enteredInputValue = enteredInputValue.split(" ");
-   const firstName = enteredInputValue[0];
-   const lastName = enteredInputValue[enteredInputValue.length - 1];
+   const studentNames = [...document.querySelectorAll("div.student-details h3")];
 
+   const inputSearchObj = searchObj(searchInput);
+   const namesMatchSearchInput = namesFoundArr(inputSearchObj, studentNames);
 
-      studentNames.forEach(student => {
-        const firstAndLastName = student.textContent.toLowerCase().split(" ");
-        if (firstAndLastName.indexOf(firstName.toLowerCase()) > -1 || firstAndLastName.indexOf(lastName.toLowerCase()) > -1) {
-           namesMatchSearchInput.push(student.parentNode.parentNode);
-        } else {
-          student.parentNode.parentNode.style.display = "none";
-        }
-     });
-
-        if (namesMatchSearchInput.length < 1 || enteredInputValue.length < 1) {
+        if (namesMatchSearchInput.length < 1 || inputSearchObj.lengthOfInput.length < 1) {
           displayNoResults(true);
           const paginationDiv = document.querySelector("div.pagination");
           if(paginationDiv !== null ){
-              const parentNode = paginationDiv.parentNode;
-              parentNode.removeChild(paginationDiv);
+            removePaginationDiv(paginationDiv);
+
           }
 
         } else {
           displayNoResults(false);
           displayResults(namesMatchSearchInput);
         }
-
-
-
-
 
 
 });

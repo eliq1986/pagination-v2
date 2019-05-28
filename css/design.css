@@ -99,7 +99,7 @@ body{
   margin: 40px 0 0 0;
   text-align: center;
 }
- 
+
   .pagination li{
     display: inline;
   }
@@ -117,3 +117,14 @@ body{
       background-color: #4ba6c3;
       color: #fff;
     }
+
+
+div[no-results]  {
+  text-align: center;
+  font-size: 1.2em;
+
+}
+
+div[no-results] h3 {
+  padding: 1em;
+}
