@@ -118,7 +118,7 @@ body{
       color: #fff;
     }
 
-<<<<<<< HEAD
+
 
 div[no-results]  {
   text-align: center;
@@ -128,13 +128,4 @@ div[no-results]  {
 
 div[no-results] h3 {
   padding: 1em;
-=======
-div[no-results] {
-  text-align: center;
-}
-
-
-div[no-results] h3 {
-  padding: 1em; 
->>>>>>> 039b4695478592c768d64cd10a5a04abfc87b283
 }
