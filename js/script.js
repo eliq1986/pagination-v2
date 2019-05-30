@@ -1,6 +1,6 @@
 
 // Global Variables
-const studentListItems = document.querySelectorAll("li.student-item");
+let studentListItems = document.querySelectorAll("li.student-item");
 const maxStudentsPerPage = 10;
 
 //function invoked upon page load
@@ -161,13 +161,13 @@ function pagination(list, page) {
 }
 
 
-function setActiveClass(event) {
+function setActiveClass(event, namesFound) {
 
   const paginationLinks = document.querySelectorAll("div.pagination a");
 
   const pageNumber = parseInt(event.target.textContent);
-
-  showPage(studentListItems, pageNumber);
+  console.log(namesFound);
+  showPage(namesFound, pageNumber);
 
   paginationLinks.forEach(link => link.className = "");
 
@@ -220,20 +220,6 @@ function displayNoResults(bool) {
 }
 
 
-function displayResults(namesMatchSearchInput) {
-  const paginationDiv = document.querySelector("div.pagination");
-  if(paginationDiv === null) {
-    showPage(namesMatchSearchInput, 1);
-    pagination(namesMatchSearchInput, 1);
-  } else {
-    removePaginationDiv(paginationDiv);
-    showPage(namesMatchSearchInput, 1);
-    pagination(namesMatchSearchInput, 1);
-
-  }
-
-}
-
 const searchObj = (inputValue) => {
 
   let enteredSearchInputValue = inputValue.value.trim();
@@ -249,24 +235,29 @@ const searchObj = (inputValue) => {
 
 //******Invoked function calls set up page load******//
 onPageLoad();
-//Click event is captuered by parent UL element
-document.querySelector("div.pagination ul").addEventListener("click", event => {
-  console.log(event);
-  event.target.tagName === "A" ? setActiveClass(event) : null;
-});
 
 
 document.querySelector("div.student-search button").addEventListener("click", (e)=> {
    let searchInput = document.querySelector("div.student-search input");
    const studentNames = [...document.querySelectorAll("div.student-details h3")];
-   const namesFound = [];
+   studentListItems = [];
    const searchValue = searchInput.value;
    studentNames.forEach( student=> {
      if (student.textContent.includes(searchValue)) {
-       namesFound.push(student.parentNode.parentNode);
+       studentListItems.push(student.parentNode.parentNode);
+       console.log(student.textContent);
+     } else {
+       student.parentNode.parentNode.style.display ="none";
      }
    });
-   showPage(namesFound, 1);
+   console.log(studentListItems);
+   showPage(studentListItems, 1);
    removeLinks();
-   pagination(namesFound, 1);
+   pagination(studentListItems, 1);
+});
+
+//Click event is captuered by parent UL element
+document.querySelector("div.pagination ul").addEventListener("click", event => {
+  console.log(studentListItems);
+  event.target.tagName === "A" ? setActiveClass(event, studentListItems) : null;
 });
