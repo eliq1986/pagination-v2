@@ -245,12 +245,10 @@ document.querySelector("div.student-search button").addEventListener("click", (e
    studentNames.forEach( student=> {
      if (student.textContent.includes(searchValue)) {
        studentListItems.push(student.parentNode.parentNode);
-       console.log(student.textContent);
      } else {
        student.parentNode.parentNode.style.display ="none";
      }
    });
-   console.log(studentListItems);
    showPage(studentListItems, 1);
    removeLinks();
    pagination(studentListItems, 1);
