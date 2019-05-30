@@ -54,6 +54,8 @@ function appendsObtrusiveJS() {
 //takes 3 arguments; loops over student list and displays block or none
 function displayStudentsItem(listOfStudents,startIndex, endIndex) {
 
+   studentListItems.forEach((student)=> student.style.display = "none");
+
   for(let i = 0; i < listOfStudents.length; i++) {
 
      if([i] >= startIndex && [i] < endIndex) {
@@ -110,8 +112,17 @@ function setFirstLinkActiveClass(page, list) {
 
 }
 
+function removeLinks() {
+  const pagainationLinks = document.querySelectorAll("div.pagination li");
+  pagainationLinks.forEach((link)=> {
+    const parentLink = link.parentNode;
+    parentLink.removeChild(link);
+  });
+}
+
 
 function pagination(list, page) {
+
 
   const containerDiv = document.querySelector("div.page");
 
@@ -236,24 +247,11 @@ const searchObj = (inputValue) => {
   }
 }
 
-const namesFoundArr = (inputSearchObj, studentNames) => {
-  const namesMatchSearchInput = [];
-  studentNames.forEach(student => {
-    const firstAndLastName = student.textContent.toLowerCase().split(" ");
-    if (firstAndLastName.indexOf(inputSearchObj.firstName.toLowerCase()) > -1 || firstAndLastName.indexOf(inputSearchObj.lastName.toLowerCase()) > -1) {
-       namesMatchSearchInput.push(student.parentNode.parentNode);
-    } else {
-      student.parentNode.parentNode.style.display = "none";
-    }
- });
-return namesMatchSearchInput;
-
-}
 //******Invoked function calls set up page load******//
 onPageLoad();
-
 //Click event is captuered by parent UL element
 document.querySelector("div.pagination ul").addEventListener("click", event => {
+  console.log(event);
   event.target.tagName === "A" ? setActiveClass(event) : null;
 });
 
@@ -261,22 +259,14 @@ document.querySelector("div.pagination ul").addEventListener("click", event => {
 document.querySelector("div.student-search button").addEventListener("click", (e)=> {
    let searchInput = document.querySelector("div.student-search input");
    const studentNames = [...document.querySelectorAll("div.student-details h3")];
-
-   const inputSearchObj = searchObj(searchInput);
-   const namesMatchSearchInput = namesFoundArr(inputSearchObj, studentNames);
-
-        if (namesMatchSearchInput.length < 1 || inputSearchObj.lengthOfInput.length < 1) {
-          displayNoResults(true);
-          const paginationDiv = document.querySelector("div.pagination");
-          if(paginationDiv !== null ){
-            removePaginationDiv(paginationDiv);
-
-          }
-
-        } else {
-          displayNoResults(false);
-          displayResults(namesMatchSearchInput);
-        }
-
-
+   const namesFound = [];
+   const searchValue = searchInput.value;
+   studentNames.forEach( student=> {
+     if (student.textContent.includes(searchValue)) {
+       namesFound.push(student.parentNode.parentNode);
+     }
+   });
+   showPage(namesFound, 1);
+   removeLinks();
+   pagination(namesFound, 1);
 });
