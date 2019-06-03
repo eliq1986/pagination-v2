@@ -226,9 +226,8 @@ const formatSearchValue = () => {
 
   let searchInput = document.querySelector("div.student-search input").value;
 
-  searchInput = searchInput.toLowerCase();
+  return searchInput = searchInput.toLowerCase();
 
-  return searchInput;
 }
 
 
@@ -248,15 +247,15 @@ function foundNames(studentListArr, inputValue) {
 //******Invoked function calls set up page load******//
 onPageLoad();
 
-
-document.querySelector("div.student-search button").addEventListener("click", (e)=> {
+// search click event
+document.querySelector("div.student-search button").addEventListener("click", e => {
 
    //set global variable to empty array
    studentListItems = [];
 
-   const formattedSearchValue = formatSearchValue();
+  formatSearchValue()
 
-   const namesFound = foundNames(studentListItems, formattedSearchValue);
+   const namesFound = foundNames(studentListItems,   formatSearchValue());
 
    removeLinks();
 
@@ -270,7 +269,7 @@ document.querySelector("div.student-search button").addEventListener("click", (e
 
 });
 
-//Click event is captuered by parent UL element
-document.querySelector("div.pagination ul").addEventListener("click", event => {
-  event.target.tagName === "A" ? setActiveClass(event, studentListItems) : null;
+//Pagination click event is captuered by parent UL element
+document.querySelector("div.pagination ul").addEventListener("click", e => {
+  e.target.tagName === "A" ? setActiveClass(e, studentListItems) : null;
 });
