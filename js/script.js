@@ -25,13 +25,14 @@ const getStartIndex = (page, maxPerPage) => (page  * maxStudentsPerPage) - maxSt
 //returns end index; takes two parameters
 const getEndIndex = (page, maxPerPage) => page * maxStudentsPerPage;
 
-
+//function focuses on input field on page load; takes no arg.
 function focusOnInputElement() {
   document.querySelector("div.student-search input").focus();
 }
 
-
+// appends input to the DOM; takes no arg.
 function appendsObtrusiveJS() {
+
   const div = document.createElement("div");
 
   div.className = "student-search";
@@ -80,14 +81,14 @@ function showPage(list, page){
 
 }
 
-
+// dynamically appends links; takes 1 arg.
 function appendLinks(list) {
 
   const ulPagination = document.querySelector("ul.js-pagination");
 
   const numberOfPaginationLinks = Math.ceil(list.length / maxStudentsPerPage);
 
-  for(let i =1; i<=numberOfPaginationLinks; i++) {
+  for(let i =1; i <= numberOfPaginationLinks; i++) {
 
     let li = document.createElement("li");
 
@@ -105,6 +106,7 @@ function appendLinks(list) {
 
 }
 
+// sets first link to active class; takes 2 arg.
 function setFirstLinkActiveClass(page, list) {
 
   if(list.length !== 0) {
@@ -115,8 +117,11 @@ function setFirstLinkActiveClass(page, list) {
 
 function removeLinks() {
   const pagainationLinks = document.querySelectorAll("div.pagination li");
-  pagainationLinks.forEach((link) => {
+
+  pagainationLinks.forEach(link => {
+
     const parentLink = link.parentNode;
+
     parentLink.removeChild(link);
   });
 }
@@ -124,10 +129,8 @@ function removeLinks() {
 
 function pagination(list, page) {
 
-
   const containerDiv = document.querySelector("div.page");
 
-//******need to fix this as it adds duplicate attributes****///
   const jsContainerAttribute = document.createAttribute("js-container");
 
   containerDiv.setAttributeNode(jsContainerAttribute);
@@ -208,27 +211,32 @@ function obtrusiveNoResults() {
 
 }
 
-
+// accepts 1 arg; displays no results if bool arg is true
 function showThanos(bool) {
 
-  if(bool) {
-    document.querySelector("div[no-results]").style.display = "block";
-  } else {
-    document.querySelector("div[no-results]").style.display = "none";
+ let displayValue = "none";
 
-  }
+ bool === true ? displayValue = "block" : "none"
 
+ document.querySelector("div[no-results]").style.display = displayValue;
 }
 
+// captues input value; formats and returns; takes no arg.
 const formatSearchValue = () => {
-  let searchInput = document.querySelector("div.student-search input");
-  const searchValue = searchInput.value.toLowerCase();
-  return searchValue;
+
+  let searchInput = document.querySelector("div.student-search input").value;
+
+  searchInput = searchInput.toLowerCase();
+
+  return searchInput;
 }
+
 
 function foundNames(studentListArr, inputValue) {
+
   const studentNames = [...document.querySelectorAll("div.student-details h3")];
-  studentNames.forEach( student=> {
+
+  studentNames.forEach( student => {
     if (student.textContent.includes(inputValue)) {
       studentListArr.push(student.parentNode.parentNode);
     } else {
@@ -243,13 +251,15 @@ onPageLoad();
 
 document.querySelector("div.student-search button").addEventListener("click", (e)=> {
 
-   //mutating global variable
+   //set global variable to empty array
    studentListItems = [];
+
    const formattedSearchValue = formatSearchValue();
 
    const namesFound = foundNames(studentListItems, formattedSearchValue);
 
    removeLinks();
+
     if(studentListItems.length > 0) {
      showThanos(false);
      showPage(studentListItems, 1);
