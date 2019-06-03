@@ -3,6 +3,7 @@
 let studentListItems = document.querySelectorAll("li.student-item");
 const maxStudentsPerPage = 10;
 
+
 //function invoked upon page load
 function onPageLoad() {
 
@@ -114,7 +115,7 @@ function setFirstLinkActiveClass(page, list) {
 
 function removeLinks() {
   const pagainationLinks = document.querySelectorAll("div.pagination li");
-  pagainationLinks.forEach((link)=> {
+  pagainationLinks.forEach((link) => {
     const parentLink = link.parentNode;
     parentLink.removeChild(link);
   });
@@ -166,7 +167,7 @@ function setActiveClass(event, namesFound) {
   const paginationLinks = document.querySelectorAll("div.pagination a");
 
   const pageNumber = parseInt(event.target.textContent);
-  console.log(namesFound);
+
   showPage(namesFound, pageNumber);
 
   paginationLinks.forEach(link => link.className = "");
@@ -203,12 +204,12 @@ function obtrusiveNoResults() {
 
   classPage.appendChild(div);
 
-  displayNoResults(false);
+  showThanos(false);
 
 }
 
 
-function displayNoResults(bool) {
+function showThanos(bool) {
 
   if(bool) {
     document.querySelector("div[no-results]").style.display = "block";
@@ -219,18 +220,21 @@ function displayNoResults(bool) {
 
 }
 
+const formatSearchValue = () => {
+  let searchInput = document.querySelector("div.student-search input");
+  const searchValue = searchInput.value.toLowerCase();
+  return searchValue;
+}
 
-const searchObj = (inputValue) => {
-
-  let enteredSearchInputValue = inputValue.value.trim();
-
-  enteredSearchInputValue = enteredSearchInputValue.split(" ");
-
-  return {
-    lengthOfInput: enteredSearchInputValue.length,
-    firstName: enteredSearchInputValue[0],
-    lastName: enteredSearchInputValue[enteredSearchInputValue.length - 1]
-  }
+function foundNames(studentListArr, inputValue) {
+  const studentNames = [...document.querySelectorAll("div.student-details h3")];
+  studentNames.forEach( student=> {
+    if (student.textContent.includes(inputValue)) {
+      studentListArr.push(student.parentNode.parentNode);
+    } else {
+      student.parentNode.parentNode.style.display ="none";
+    }
+  });
 }
 
 //******Invoked function calls set up page load******//
@@ -238,24 +242,25 @@ onPageLoad();
 
 
 document.querySelector("div.student-search button").addEventListener("click", (e)=> {
-   let searchInput = document.querySelector("div.student-search input");
-   const studentNames = [...document.querySelectorAll("div.student-details h3")];
+
+   //mutating global variable
    studentListItems = [];
-   const searchValue = searchInput.value;
-   studentNames.forEach( student=> {
-     if (student.textContent.includes(searchValue)) {
-       studentListItems.push(student.parentNode.parentNode);
-     } else {
-       student.parentNode.parentNode.style.display ="none";
-     }
-   });
-   showPage(studentListItems, 1);
+   const formattedSearchValue = formatSearchValue();
+
+   const namesFound = foundNames(studentListItems, formattedSearchValue);
+
    removeLinks();
-   pagination(studentListItems, 1);
+    if(studentListItems.length > 0) {
+     showThanos(false);
+     showPage(studentListItems, 1);
+     pagination(studentListItems, 1);
+   } else {
+     showThanos(true);
+   }
+
 });
 
 //Click event is captuered by parent UL element
 document.querySelector("div.pagination ul").addEventListener("click", event => {
-  console.log(studentListItems);
   event.target.tagName === "A" ? setActiveClass(event, studentListItems) : null;
 });
