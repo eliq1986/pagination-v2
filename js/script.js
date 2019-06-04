@@ -56,7 +56,7 @@ function appendsObtrusiveJS() {
 //takes 3 arguments; loops over student list and displays block or none
 function displayStudentsItem(listOfStudents,startIndex, endIndex) {
 
-   studentListItems.forEach((student)=> student.style.display = "none");
+   studentListItems.forEach(student => student.style.display = "none");
 
   for(let i = 0; i < listOfStudents.length; i++) {
 
@@ -81,12 +81,17 @@ function showPage(list, page){
 
 }
 
+function getPaginationLinks(list) {
+
+
+}
+
 // dynamically appends links; takes 1 arg.
 function appendLinks(list) {
 
   const ulPagination = document.querySelector("ul.js-pagination");
 
-  const numberOfPaginationLinks = Math.ceil(list.length / maxStudentsPerPage);
+  const numberOfPaginationLinks =  Math.ceil(list.length / maxStudentsPerPage)
 
   for(let i =1; i <= numberOfPaginationLinks; i++) {
 
@@ -184,6 +189,7 @@ function removePaginationDiv(paginationDiv) {
   const parentNode = paginationDiv.parentNode;
 
   parentNode.removeChild(paginationDiv);
+
 }
 
 
@@ -192,11 +198,14 @@ function obtrusiveNoResults() {
   const classPage = document.querySelector("div.page");
 
   const thanosImage = "images/thanos.png";
+  const gauntlet = "images/gauntlet.png";
 
   const noResultsTemplate = `
     <h2>No results have been found</h2>
     <h3>Thanos must of snapped his finger</h3>
     <img src=${thanosImage}>
+    <img src=${gauntlet}>
+
   `;
 
   const div = document.createElement("div");
@@ -216,9 +225,10 @@ function showThanos(bool) {
 
  let displayValue = "none";
 
- bool === true ? displayValue = "block" : "none"
+ bool ? displayValue = "block" : null
 
  document.querySelector("div[no-results]").style.display = displayValue;
+
 }
 
 // captues input value; formats and returns; takes no arg.
@@ -230,6 +240,10 @@ const formatSearchValue = () => {
 
 }
 
+function setStudentDisplayToNone(student) {
+  student.parentNode.parentNode.style.display ="none";
+}
+
 
 function foundNames(studentListArr, inputValue) {
 
@@ -239,7 +253,7 @@ function foundNames(studentListArr, inputValue) {
     if (student.textContent.includes(inputValue)) {
       studentListArr.push(student.parentNode.parentNode);
     } else {
-      student.parentNode.parentNode.style.display ="none";
+      setStudentDisplayToNone(student);
     }
   });
 }
@@ -252,8 +266,6 @@ document.querySelector("div.student-search button").addEventListener("click", e 
 
    //set global variable to empty array
    studentListItems = [];
-
-  formatSearchValue()
 
    const namesFound = foundNames(studentListItems,   formatSearchValue());
 
