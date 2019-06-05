@@ -81,10 +81,6 @@ function showPage(list, page){
 
 }
 
-function getPaginationLinks(list) {
-
-
-}
 
 // dynamically appends links; takes 1 arg.
 function appendLinks(list) {
@@ -134,40 +130,45 @@ function removeLinks() {
 
 function pagination(list, page) {
 
-  const containerDiv = document.querySelector("div.page");
+    const containerDiv = document.querySelector("div.page");
 
-  const jsContainerAttribute = document.createAttribute("js-container");
+    const jsContainerAttribute = document.createAttribute("js-container");
 
-  containerDiv.setAttributeNode(jsContainerAttribute);
+    containerDiv.setAttributeNode(jsContainerAttribute);
 
-  const jsContainer = document.querySelector("div[js-container]");
+    const jsContainer = document.querySelector("div[js-container]");
 
-  const div = document.createElement("div");
+     if(document.querySelector("div.pagination") === null) {
 
-  div.setAttribute("class", "pagination");
+       const div = document.createElement("div");
 
-  jsContainer.appendChild(div);
+       div.setAttribute("class", "pagination");
 
-  const ul = document.createElement("ul");
+       jsContainer.appendChild(div);
 
-  ul.setAttribute("class", "js-pagination");
+       const ul = document.createElement("ul");
 
-  div.appendChild(ul);
+       ul.setAttribute("class", "js-pagination");
 
-  if(list.length < 10) {
+       div.appendChild(ul);
 
-    appendLinks(list, 1);
+     }
 
-    setFirstLinkActiveClass(1, list);
 
-  } else {
+    if(list.length < 10) {
 
-    appendLinks(list, page);
+      appendLinks(list, 1);
 
-    setFirstLinkActiveClass(page, list);
+      setFirstLinkActiveClass(1, list);
+
+    } else {
+
+      appendLinks(list, page);
+
+      setFirstLinkActiveClass(page, list);
+    }
   }
 
-}
 
 
 function setActiveClass(event, namesFound) {
@@ -216,18 +217,14 @@ function obtrusiveNoResults() {
 
   classPage.appendChild(div);
 
-  showThanos(false);
+  showThanos("none");
 
 }
 
 // accepts 1 arg; displays no results if bool arg is true
-function showThanos(bool) {
+function showThanos(setDisplayValue) {
 
- let displayValue = "none";
-
- bool ? displayValue = "block" : null
-
- document.querySelector("div[no-results]").style.display = displayValue;
+ document.querySelector("div[no-results]").style.display = setDisplayValue;
 
 }
 
@@ -272,11 +269,11 @@ document.querySelector("div.student-search button").addEventListener("click", e 
    removeLinks();
 
     if(studentListItems.length > 0) {
-     showThanos(false);
+     showThanos("none");
      showPage(studentListItems, 1);
      pagination(studentListItems, 1);
    } else {
-     showThanos(true);
+     showThanos("block");
    }
 
 });
