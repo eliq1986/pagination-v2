@@ -10,7 +10,7 @@ function onPageLoad() {
 
   showPage(studentListItems, 1);
 
-  appendsObtrusiveJS();
+  appendsInputField();
 
   focusOnInputElement();
 
@@ -31,7 +31,7 @@ function focusOnInputElement() {
 }
 
 // appends input to the DOM; takes no arg.
-function appendsObtrusiveJS() {
+function appendsInputField() {
 
   const div = document.createElement("div");
 
@@ -271,20 +271,20 @@ onPageLoad();
 // search click event
 document.querySelector("div.student-search button").addEventListener("click", e => {
 
-   //set global variable to empty array
-   studentListItems = [];
+ //set global variable to empty array
+ studentListItems = [];
 
-    checkIfNameMatchesInputValue(studentListItems,   formatSearchValue());
+  checkIfNameMatchesInputValue(studentListItems,   formatSearchValue());
 
-    removeNumberLinks();
+  removeNumberLinks();
 
-    if(studentListItems.length > 0) {
-     showThanos("none");
-     showPage(studentListItems, 1);
-     pagination(studentListItems, 1);
-   } else {
-     showThanos("block");
-   }
+  if(studentListItems.length > 0) {
+   showThanos("none");
+   showPage(studentListItems, 1);
+   pagination(studentListItems, 1);
+ } else {
+   showThanos("block");
+ }
 
 });
 
