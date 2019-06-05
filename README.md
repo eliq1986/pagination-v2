@@ -2,13 +2,14 @@
 
 ## Skills Learned
 
-Functions
-Passing arguments to a function
-E6 Syntax
-Listening to events on a web page.
-CSS animations via KeyFrames.
-Unobtrusive JavaScript
-Dynamically adding a search field using JavaScript
+- Functions
+- Passing arguments to a function
+- E6 Syntax
+- Listening to events on a web page.
+- CSS animations via KeyFrames.
+- Unobtrusive JavaScript
+- Dynamically adding a search field using JavaScript
+- Longer function names verses long comments explaining a functions use.
 
 
 ## Extra Credit Features
