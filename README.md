@@ -1,6 +1,6 @@
-#Enhance the usability of a web page that has too much information. Making it easier to find information and read the page, use progressive enhancement to add pagination.
+# Enhance the usability of a web page that has too much information. Making it easier to find information and read the page, use progressive enhancement to add pagination.
 
-##Skills Learned
+## Skills Learned
 
 Functions
 Passing arguments to a function
