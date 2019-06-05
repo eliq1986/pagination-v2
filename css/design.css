@@ -129,3 +129,23 @@ div[no-results]  {
 div[no-results] h3 {
   padding: 1em;
 }
+
+div.student-search button {
+  cursor: pointer;
+}
+
+img[src="images/gauntlet.png"]{
+animation-name: thanosSnap;
+animation-duration: .8s;
+animation-timing-function: ease-out;
+}
+
+@keyframes thanosSnap {
+
+  60% {
+    transform: translateY(30px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}

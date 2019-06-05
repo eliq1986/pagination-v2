@@ -1,10 +1,9 @@
-
 // Global Variables
 let studentListItems = document.querySelectorAll("li.student-item");
 const maxStudentsPerPage = 10;
 
 
-//function invoked upon page load
+//function invoked upon page load on line 256
 function onPageLoad() {
 
   pagination(studentListItems,1);
@@ -15,14 +14,15 @@ function onPageLoad() {
 
   focusOnInputElement();
 
-  obtrusiveNoResults();
+  appendsThanosNoResultsDiv();
+
 }
 
-//returns start index; takes two parameters.
+//returns start index; takes two number arguments
 const getStartIndex = (page, maxPerPage) => (page  * maxStudentsPerPage) - maxStudentsPerPage;
 
 
-//returns end index; takes two parameters
+//returns end index; takes two number arguments
 const getEndIndex = (page, maxPerPage) => page * maxStudentsPerPage;
 
 //function focuses on input field on page load; takes no arg.
@@ -53,14 +53,14 @@ function appendsObtrusiveJS() {
 }
 
 
-//takes 3 arguments; loops over student list and displays block or none
+//takes 3 arguments; node list of students array, number & number
 function displayStudentsItem(listOfStudents,startIndex, endIndex) {
 
    studentListItems.forEach(student => student.style.display = "none");
 
   for(let i = 0; i < listOfStudents.length; i++) {
 
-     if([i] >= startIndex && [i] < endIndex) {
+     if(i >= startIndex && i < endIndex) {
        listOfStudents[i].style.display = "block";
      }else {
        listOfStudents[i].style.display = "none";
@@ -70,7 +70,7 @@ function displayStudentsItem(listOfStudents,startIndex, endIndex) {
 }
 
 
-//function calls three functions within that show appropriate list.
+//function takes two args. Array of students and number type.
 function showPage(list, page){
 
   const startIndex = getStartIndex(page, maxStudentsPerPage);
@@ -82,12 +82,12 @@ function showPage(list, page){
 }
 
 
-// dynamically appends links; takes 1 arg.
+// dynamically appends links; takes 1 arg. An array of students
 function appendLinks(list) {
 
   const ulPagination = document.querySelector("ul.js-pagination");
 
-  const numberOfPaginationLinks =  Math.ceil(list.length / maxStudentsPerPage)
+  const numberOfPaginationLinks =  Math.ceil(list.length / maxStudentsPerPage);
 
   for(let i =1; i <= numberOfPaginationLinks; i++) {
 
@@ -97,9 +97,9 @@ function appendLinks(list) {
 
     a.textContent = [i];
 
-    a.setAttribute("href", "#")
+    a.setAttribute("href", "#");
 
-    li.appendChild(a)
+    li.appendChild(a);
 
     ulPagination.appendChild(li);
 
@@ -107,7 +107,7 @@ function appendLinks(list) {
 
 }
 
-// sets first link to active class; takes 2 arg.
+// sets first link to active class; takes 2 arg. Number type and array.
 function setFirstLinkActiveClass(page, list) {
 
   if(list.length !== 0) {
@@ -116,19 +116,44 @@ function setFirstLinkActiveClass(page, list) {
 
 }
 
-function removeLinks() {
+// removes numbers links. Takes no arg.
+function removeNumberLinks() {
+
   const pagainationLinks = document.querySelectorAll("div.pagination li");
 
   pagainationLinks.forEach(link => {
 
-    const parentLink = link.parentNode;
+  const parentLink = link.parentNode;
 
-    parentLink.removeChild(link);
+  parentLink.removeChild(link);
+
   });
 }
 
+// checks if div is present if not creates and appends.
+function checkIfPaginationDivExistsIfNotCreateIt() {
 
-function pagination(list, page) {
+  if(document.querySelector("div.pagination") === null) {
+
+    const jsContainer = document.querySelector("div[js-container]");
+
+    const div = document.createElement("div");
+
+    div.setAttribute("class", "pagination");
+
+    jsContainer.appendChild(div);
+
+    const ul = document.createElement("ul");
+
+    ul.setAttribute("class", "js-pagination");
+
+    div.appendChild(ul);
+
+  }
+}
+
+// function controls pagination at bottom of page. Takes two args a array and a number type.
+function pagination(listOfStudents, page) {
 
     const containerDiv = document.querySelector("div.page");
 
@@ -136,41 +161,31 @@ function pagination(list, page) {
 
     containerDiv.setAttributeNode(jsContainerAttribute);
 
-    const jsContainer = document.querySelector("div[js-container]");
+    checkIfPaginationDivExistsIfNotCreateIt();
 
-     if(document.querySelector("div.pagination") === null) {
+    if(listOfStudents.length < 10) {
 
-       const div = document.createElement("div");
+      appendLinks(listOfStudents, 1);
 
-       div.setAttribute("class", "pagination");
-
-       jsContainer.appendChild(div);
-
-       const ul = document.createElement("ul");
-
-       ul.setAttribute("class", "js-pagination");
-
-       div.appendChild(ul);
-
-     }
-
-
-    if(list.length < 10) {
-
-      appendLinks(list, 1);
-
-      setFirstLinkActiveClass(1, list);
+      setFirstLinkActiveClass(1, listOfStudents);
 
     } else {
 
-      appendLinks(list, page);
+      appendLinks(listOfStudents, page);
 
-      setFirstLinkActiveClass(page, list);
+      setFirstLinkActiveClass(page, listOfStudents);
     }
   }
 
+// removes class active from all links. Takes node list array.
+function removeActiveClassNameFromLinks(paginationLinks) {
+
+   paginationLinks.forEach(link => link.className = "");
+
+}
 
 
+// sets active class. Takes two args a event and array of names.
 function setActiveClass(event, namesFound) {
 
   const paginationLinks = document.querySelectorAll("div.pagination a");
@@ -179,22 +194,13 @@ function setActiveClass(event, namesFound) {
 
   showPage(namesFound, pageNumber);
 
-  paginationLinks.forEach(link => link.className = "");
+  removeActiveClassNameFromLinks(paginationLinks);
 
   paginationLinks[pageNumber - 1].className = "active";
 }
 
-
-function removePaginationDiv(paginationDiv) {
-
-  const parentNode = paginationDiv.parentNode;
-
-  parentNode.removeChild(paginationDiv);
-
-}
-
-
-function obtrusiveNoResults() {
+// appends obtrusive JS upon page load. Takes no args.
+function appendsThanosNoResultsDiv() {
 
   const classPage = document.querySelector("div.page");
 
@@ -237,17 +243,21 @@ const formatSearchValue = () => {
 
 }
 
+// sets display value to none; takes 1 arg.
 function setStudentDisplayToNone(student) {
   student.parentNode.parentNode.style.display ="none";
 }
 
-
-function foundNames(studentListArr, inputValue) {
+//takes array as first agrument and input as second arg. Mutates studentListItem array.
+function checkIfNameMatchesInputValue(studentListArr, inputValue) {
 
   const studentNames = [...document.querySelectorAll("div.student-details h3")];
 
   studentNames.forEach( student => {
-    if (student.textContent.includes(inputValue)) {
+
+    const studentName = student.textContent;
+
+    if (studentName.includes(inputValue)) {
       studentListArr.push(student.parentNode.parentNode);
     } else {
       setStudentDisplayToNone(student);
@@ -264,9 +274,9 @@ document.querySelector("div.student-search button").addEventListener("click", e 
    //set global variable to empty array
    studentListItems = [];
 
-   const namesFound = foundNames(studentListItems,   formatSearchValue());
+    checkIfNameMatchesInputValue(studentListItems,   formatSearchValue());
 
-   removeLinks();
+    removeNumberLinks();
 
     if(studentListItems.length > 0) {
      showThanos("none");
@@ -277,6 +287,7 @@ document.querySelector("div.student-search button").addEventListener("click", e 
    }
 
 });
+
 
 //Pagination click event is captuered by parent UL element
 document.querySelector("div.pagination ul").addEventListener("click", e => {
