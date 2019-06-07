@@ -1,5 +1,9 @@
 # Enhanced the usability of a web page that has too much information. Making it easier to find information and read the page, use progressive enhancement to add pagination.
 
+Check out this demo....
+
+[CLICK FOR DEMO](https://eliq1986.github.io/pagination-v2/)
+
 ## Skills Learned
 
 - Functions
